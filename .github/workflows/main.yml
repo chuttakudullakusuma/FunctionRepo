@@ -5,7 +5,7 @@ on:
      - master
 
 jobs:
-  # JOB 1 — BUILD
+  # BUILD JOB
   build:  
     runs-on: ubuntu-latest
 
@@ -31,7 +31,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: functionapp
-          path: publish
+          path: ./publish
 
 
   #  JOB 2 — DEPLOY
@@ -44,6 +44,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: functionapp
+          path: ./functionapp
 
       - name: Deploy to Azure Function
         uses: Azure/functions-action@v1
