@@ -1,29 +1,29 @@
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using System.Net;
 
-namespace FunctionApp1;
-
-public class Function1
+namespace FunctionApp1
 {
-    private readonly ILogger<Function1> _logger;
-
-    public Function1(ILogger<Function1> logger)
+    public class Function1
     {
-        _logger = logger;
-    }
+        private readonly ILogger _logger;
 
-    [Function("Function1")]
-    public HttpResponseData Run(
+        public Function1(ILoggerFactory loggerFactory)
+        {
+            _logger = loggerFactory.CreateLogger<Function1>();
+        }
+
+        [Function("Function1")]
+        public HttpResponseData Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req)
-    {
-        _logger.LogInformation("C# HTTP trigger function processed a request.");
+        {
+            _logger.LogInformation("C# HTTP trigger function processed a request.");
 
-        var response = req.CreateResponse(HttpStatusCode.OK);
-        response.WriteString("Welcome to Azure Functions!");
-        return response;
+            var response = req.CreateResponse(HttpStatusCode.OK);
+            response.WriteString("Welcome to Azure Functions!");
+
+            return response;
+        }
     }
 }
