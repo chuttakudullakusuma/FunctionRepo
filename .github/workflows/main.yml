@@ -1,37 +1,53 @@
-name: Deploy Azure Function
-
+name: Azure Function CI/CD
 on:
   push:
     branches:
-      - master
+     - master
 
 jobs:
-  build-and-deploy:
+  # JOB 1 — BUILD
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Setup .NET
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
 
-      # Step 3: Build project
-      - name: Build
-        run: dotnet build --configuration Release
+      - name: Restore dependencies
+        run: dotnet restore
 
-      # Step 4: Publish project
-      - name: Publish
+      - name: Build project
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Publish project
         run: dotnet publish -c Release -o publish
 
-      # Step 5: Deploy to Azure Function App
-      - name: Deployment 
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: functionapp
+          path: publish
+
+
+  #  JOB 2 — DEPLOY
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: functionapp
+
+      - name: Deploy to Azure Function
         uses: Azure/functions-action@v1
         with:
           app-name: kusumafuncapp
-          package: ./publish
+          package: ./
           publish-profile: ${{ secrets.AZURE_FUNCTIONAPP }}
