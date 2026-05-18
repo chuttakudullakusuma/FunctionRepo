@@ -49,5 +49,5 @@ jobs:
         uses: Azure/functions-action@v1
         with:
           app-name: kusumafuncapp
-          package: './publish'
+          package: './functionapp'
           publish-profile: ${{ secrets.AZURE_FUNCTIONAPP }}
