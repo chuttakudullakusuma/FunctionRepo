@@ -22,10 +22,11 @@ jobs:
         run: dotnet restore
 
       - name: Build project
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build FunctionApp1/FunctionApp1.csproj --configuration Release --no-restore
+
 
       - name: Publish Function App
-        run: dotnet publish FunctionApp1/FunctionApp1.csproj -c Release -o ./publish
+        run: dotnet publish FunctionApp1/FunctionApp1.csproj -c Release -o publish /p:UseAppHost=false
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
