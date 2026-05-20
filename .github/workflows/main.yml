@@ -1,12 +1,12 @@
 name: Azure Function CI/CD
+
 on:
   push:
     branches:
-     - master
+      - master
 
 jobs:
-  # BUILD JOB
-  build:  
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,14 +18,8 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Restore dependencies
-        run: dotnet restore
-
-      - name: Build project
-        run: dotnet build FunctionApp1/FunctionApp1.csproj --configuration Release --no-restore
-
-      - name: Publish Function App
-        run: dotnet publish FunctionApp1/FunctionApp1.csproj -c Release -o publish 
+      - name: Publish project
+        run: dotnet publish FunctionApp1/FunctionApp1.csproj -c Release -o ./publish
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -33,8 +27,6 @@ jobs:
           name: functionapp
           path: ./publish
 
-
-  #  JOB 2 — DEPLOY
   deploy:
     runs-on: ubuntu-latest
     needs: build
@@ -50,5 +42,5 @@ jobs:
         uses: Azure/functions-action@v1
         with:
           app-name: kusumafunctionapp
-          package: .
+          package: '.'
           publish-profile: ${{ secrets.AZURE_FUNCTIONAPP }}
