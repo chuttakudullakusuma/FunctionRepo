@@ -1,23 +1,40 @@
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Functions.Worker;
-using Microsoft.Extensions.Logging;
+//using Microsoft.AspNetCore.Http;
+//using Microsoft.AspNetCore.Mvc;
+//using Microsoft.Azure.Functions.Worker;
+//using Microsoft.Extensions.Logging;
 
-namespace FunctionApp1;
+//namespace FunctionApp1;
+
+//public class Function1
+//{
+//    private readonly ILogger<Function1> _logger;
+
+//    public Function1(ILogger<Function1> logger)
+//    {
+//        _logger = logger;
+//    }
+
+//    [Function("HTTPTRIGGER1")]
+//    public IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequest req)
+//    {
+//        _logger.LogInformation("C# HTTP trigger function processed a request.");
+//        return new OkObjectResult("Welcome to Azure Functions!");
+//    }
+//}
+
+
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.Functions.Worker.Http;
+using System.Net;
 
 public class Function1
 {
-    private readonly ILogger<Function1> _logger;
-
-    public Function1(ILogger<Function1> logger)
-    {
-        _logger = logger;
-    }
-
     [Function("HTTPTRIGGER1")]
-    public IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequest req)
+    public HttpResponseData Run(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData req)
     {
-        _logger.LogInformation("C# HTTP trigger function processed a request.");
-        return new OkObjectResult("Welcome to Azure Functions!");
+        var response = req.CreateResponse(HttpStatusCode.OK);
+        response.WriteString("Hello world!");
+        return response;
     }
 }
